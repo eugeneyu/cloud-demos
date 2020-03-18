@@ -4,13 +4,14 @@ import os
 
 BUCKET_DEST = os.environ['BUCKET_DEST']
 
+storage_client = storage.Client()
+
 def copy_object(event, context):
 
     bucket_name = event['bucket']
     object_name_src = event['name']
     object_name_dest = object_name_src
 
-    storage_client = storage.Client()
     source_bucket = storage_client.bucket(bucket_name)
     source_blob = source_bucket.blob(object_name_src)
     destination_bucket = storage_client.bucket(BUCKET_DEST)
@@ -31,8 +32,6 @@ def copy_object(event, context):
 def delete_object(event, context):
     bucket_name = event['bucket']
     object_name_src = event['name']
-
-    storage_client = storage.Client()
 
     destination_bucket = storage_client.bucket(BUCKET_DEST)
 
