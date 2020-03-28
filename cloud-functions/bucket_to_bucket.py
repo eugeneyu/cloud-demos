@@ -15,16 +15,15 @@ def copy_object(event, context):
     source_bucket = storage_client.bucket(bucket_name)
     source_blob = source_bucket.blob(object_name_src)
     destination_bucket = storage_client.bucket(BUCKET_DEST)
+    destination_blob = destination_bucket.blob(object_name_dest)
 
-    blob_copy = source_bucket.copy_blob(
-        source_blob, destination_bucket, object_name_dest
-    )
+    (token, bytes_rewritten, total_bytes) = destination_blob.rewrite(source_blob)
 
     print(
         "Blob {} in bucket {} copied to blob {} in bucket {}.".format(
             source_blob.name,
             source_bucket.name,
-            blob_copy.name,
+            destination_blob.name,
             destination_bucket.name,
         )
     )
