@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-flask
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: image
+  template:
+    metadata:
+      labels:
+        app: image
+    spec:
+      containers:
+      - name: image-function
+        imagePullPolicy: Always
+        image: asia.gcr.io/yy-callme/image-function
+        env: 
+        - name: PORT
+          value: "8080"
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 200m
