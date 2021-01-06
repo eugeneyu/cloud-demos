@@ -1,0 +1,169 @@
+{
+  "config": {
+    "inputs": [
+      {
+        "key": "input0",
+      }
+    ],
+    "editList": [
+      {
+        "key": "atom0",
+        "inputs": [
+          "input0"
+        ]
+      }
+    ],
+    "elementaryStreams": [
+      {
+        "key": "video-stream0",
+        "videoStream": {
+          "codec": "h264",
+          "heightPixels": 360,
+          "widthPixels": 640,
+          "bitrateBps": 400000,
+          "frameRate": 50,
+          "enableTwoPass": true,
+          "gopDuration": "5s",
+          "vbvSizeBits": 18000000,
+        }
+      },
+      {
+        "key": "video-stream1",
+        "videoStream": {
+          "codec": "h264",
+          "heightPixels": 480,
+          "widthPixels": 854,
+          "bitrateBps": 700000,
+          "frameRate": 50,
+          "enableTwoPass": true,
+          "gopDuration": "5s",
+          "vbvSizeBits": 18000000,
+        }
+      },
+      {
+        "key": "video-stream2",
+        "videoStream": {
+          "codec": "h264",
+          "heightPixels": 720,
+          "widthPixels": 1280,
+          "bitrateBps": 1400000,
+          "frameRate": 50,
+          "enableTwoPass": true,
+          "gopDuration": "5s",
+          "vbvSizeBits": 18000000,
+        }
+      },
+      {
+        "key": "video-stream3",
+        "videoStream": {
+          "codec": "h264",
+          "heightPixels": 1080,
+          "widthPixels": 1920,
+          "bitrateBps": 2100000,
+          "frameRate": 50,
+          "enableTwoPass": true,
+          "gopDuration": "5s",
+          "vbvSizeBits": 18000000,
+        }
+      },
+      {
+        "key": "video-stream4",
+        "videoStream": {
+          "codec": "h264",
+          "heightPixels": 1080,
+          "widthPixels": 1920,
+          "bitrateBps": 4200000,
+          "frameRate": 50,
+          "enableTwoPass": true,
+          "gopDuration": "5s",
+          "vbvSizeBits": 18000000,
+        }
+      },
+      {
+        "key": "audio-stream0",
+        "audioStream": {
+          "codec": "aac",
+          "bitrateBps": 64000
+        }
+      }
+    ],
+    "muxStreams": [
+      {
+        "key": "400-kbps-ts",
+        "container": "ts",
+        "elementaryStreams": [
+          "video-stream0",
+          "audio-stream0"
+        ],
+        "segmentSettings": {
+          "segmentDuration": "5s",
+          "individualSegments": true
+        }
+      },
+      {
+        "key": "700-kbps-ts",
+        "container": "ts",
+        "elementaryStreams": [
+          "video-stream1",
+          "audio-stream0"
+        ],
+        "segmentSettings": {
+          "segmentDuration": "5s",
+          "individualSegments": true
+        }
+      },
+      {
+        "key": "1400-kbps-ts",
+        "container": "ts",
+        "elementaryStreams": [
+          "video-stream2",
+          "audio-stream0"
+        ],
+        "segmentSettings": {
+          "segmentDuration": "5s",
+          "individualSegments": true
+        }
+      },
+      {
+        "key": "2100-kbps-ts",
+        "container": "ts",
+        "elementaryStreams": [
+          "video-stream3",
+          "audio-stream0"
+        ],
+        "segmentSettings": {
+          "segmentDuration": "5s",
+          "individualSegments": true
+        }
+      },
+      {
+        "key": "4200-kbps-ts",
+        "container": "ts",
+        "elementaryStreams": [
+          "video-stream4",
+          "audio-stream0"
+        ],
+        "segmentSettings": {
+          "segmentDuration": "5s",
+          "individualSegments": true
+        }
+      },
+    ],
+    "manifests": [
+      {
+        "fileName": "master.m3u8",
+        "type": "HLS",
+        "muxStreams": [
+          "400-kbps-ts",
+          "700-kbps-ts",
+          "1400-kbps-ts",
+          "2100-kbps-ts",
+          "4200-kbps-ts"
+        ]
+      }
+
+    ],
+    "output": {
+    }
+  }
+}
