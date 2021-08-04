@@ -1,0 +1,93 @@
+
+{
+  "config": {
+    "inputs": [
+      {
+        "key": "input0",
+        "uri": "gs://alme-test-eyu/transcode_input/oasis/source3.mkv"
+      }
+    ],
+    "editList": [
+      {
+        "key": "atom1",
+        "inputs": [
+          "input0"
+        ]
+      }
+    ],
+    "elementaryStreams": [
+      {
+        "key": "video-stream0",
+        "videoStream": {
+          "codec": "h264",
+	      "heightPixels": 360,
+	      "widthPixels": 640,
+	      "bitrateBps": 550000,
+	      "frameRate": 60,
+        }
+      },
+      {
+        "key": "audio-stream0",
+        "audioStream": {
+          "codec": "aac",
+          "bitrateBps": 64000,
+          "channelCount": 2,
+          "mapping":  [
+            {
+              "key":  "atom1",
+              "channels":  [
+                {
+                  "inputs":  [
+                    {
+                      "key":  "input0",
+                      "track":  0,
+                      "channel":  0
+                    }
+                  ]
+                },
+                {
+                  "inputs":  [
+                    {
+                      "key":  "input0",
+                      "track":  0,
+                      "channel":  1
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+        }
+      },
+    ],
+    "muxStreams": [
+      {
+        "key": "sd",
+        "container": "ts",
+        "elementaryStreams": [
+          "video-stream0",
+          "audio-stream0"
+        ],
+        "segmentSettings": {
+          "segmentDuration": "6s",
+          "individualSegments": true
+        }
+      },
+    ],
+    "manifests": [
+      {
+        "fileName": "master.m3u8",
+        "type": "HLS",
+        "muxStreams": [
+          "sd",
+        ]
+      }
+    ],
+    "output": {
+      "uri": "gs://hk-publish/transcode_output/oasis/20210803-3/"
+    }
+  }
+}
+
+
+
