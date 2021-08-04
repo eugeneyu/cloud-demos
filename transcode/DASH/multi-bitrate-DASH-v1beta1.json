@@ -1,0 +1,101 @@
+{
+  "config": {
+    "inputs": [
+      {
+        "key": "input0",
+      }
+    ],
+    "editList": [
+      {
+        "key": "atom0",
+        "inputs": [
+          "input0"
+        ]
+      }
+    ],
+    "elementaryStreams": [
+      {
+        "key": "video-stream0",
+        "videoStream": {
+          "codec": "h265",
+          "heightPixels": 640,
+          "widthPixels": 360,
+          "bitrateBps": 400000,
+          "crfLevel": 23,
+          "frameRate": 30,
+          "enableTwoPass": true,
+          "gopDuration": "2s",
+        }
+      }, 
+      {
+        "key": "video-stream1",
+        "videoStream": {
+          "codec": "h265",
+          "heightPixels": 960,
+          "widthPixels": 540,
+          "bitrateBps": 750000,
+          "crfLevel": 25,
+          "frameRate": 30,
+          "enableTwoPass": true,
+          "gopDuration": "2s",
+        }
+      }, 
+      {
+        "key": "audio-stream0",
+        "audioStream": {
+          "codec": "aac",
+          "bitrateBps": 64000,
+          "sampleRateHertz": 48000,
+        }
+      },  
+    ],
+    "muxStreams": [
+      {
+        "key": "400-kbps-mp4",
+        "container": "fmp4",
+        "elementaryStreams": [
+          "video-stream0"
+        ],
+        "segmentSettings": {
+          "segmentDuration": "2s",
+          "individualSegments": true
+        }
+      },
+      {
+        "key": "750-kbps-mp4",
+        "container": "fmp4",
+        "elementaryStreams": [
+          "video-stream1"
+        ],
+        "segmentSettings": {
+          "segmentDuration": "2s",
+          "individualSegments": true
+        }
+      },
+      {
+        "key": "audio-only",
+        "container": "fmp4",
+        "elementaryStreams": [
+          "audio-stream0"
+        ],
+        "segmentSettings": {
+          "segmentDuration": "2s",
+          "individualSegments": true
+        }
+      },
+    ],
+    "manifests": [
+      {
+        "fileName": "manifest.mpd",
+        "type": "DASH",
+        "muxStreams": [
+          "400-kbps-mp4",
+          "750-kbps-mp4",
+          "audio-only"
+        ]
+      }
+    ],
+    "output": {
+    }
+  }
+}
