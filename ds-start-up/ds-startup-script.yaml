@@ -1,0 +1,63 @@
+kind: DaemonSet
+apiVersion: apps/v1
+metadata:
+ name: startup-ds
+ labels:
+   app: startup-ds
+spec:
+ selector:
+   matchLabels:
+     app: startup-ds
+ template:
+   metadata:
+     labels:
+       app: startup-ds
+   spec:
+     hostPID: true
+     nodeSelector:
+        cloud.google.com/gke-nodepool: pool-1
+     tolerations:
+     - effect: NoSchedule
+       key: ignore-taint.cluster-autoscaler.kubernetes.io/mytaint
+       operator: Equal
+       value: init
+     containers:
+     - name: startup-ds
+       image: gcr.io/youzhi-lab/my-ds-startup:v1.5
+       imagePullPolicy: Always
+       securityContext:
+         privileged: true
+       env:
+       - name: MY_NODE_NAME
+         valueFrom:
+           fieldRef:
+             fieldPath: spec.nodeName
+       - name: STARTUP_SCRIPT
+         value: |
+           #!/bin/bash
+           gcloud container clusters get-credentials demo-cluster-sin --region asia-southeast1 --project youzhi-lab
+           # Customize the node
+           EXEC=(nsenter -t 1 -m -u -i -n -p --)
+           node_folder_ls_result=`"${EXEC[@]}" ls -l /mnt/disks/data`
+           if [[ -z "$node_folder_ls_result" ]]; then
+             zone_name=`gcloud compute instances list --filter="name=${MY_NODE_NAME}" --format "get(zone)" | awk -F/ '{print $NF}'`
+             diak_name=pd-data-${MY_NODE_NAME}
+             gcloud compute disks create ${diak_name} --size 100 --zone ${zone_name} --type https://www.googleapis.com/compute/v1/projects/youzhi-lab/zones/${zone_name}/diskTypes/pd-standard
+             gcloud compute instances attach-disk ${MY_NODE_NAME} --disk ${diak_name} --zone ${zone_name}
+             "${EXEC[@]}" mkfs.ext4 -m 0 -E lazy_itable_init=0,lazy_journal_init=0,discard /dev/sdb
+             "${EXEC[@]}" mkdir -p /mnt/disks/data
+             "${EXEC[@]}" mount -o discard,defaults /dev/sdb /mnt/disks/data
+             "${EXEC[@]}" chmod a+w /mnt/disks/data
+             fs_uuid=$("${EXEC[@]}" blkid -o value -s UUID /dev/sdb)
+             "${EXEC[@]}" echo "UUID=$fs_uuid /mnt/disks/data ext4 discard,defaults,nofail 0 2" >> /etc/fstab
+           fi
+           while :; do
+             echo "${MY_NODE_NAME}"
+             is_tainted=`kubectl describe node ${MY_NODE_NAME} |grep -A 5 "Taints:"|grep mytaint`
+             echo "is_tainted = ${is_tainted}"
+             if [[ ! -z "${is_tainted}" ]]; then
+               kubectl taint nodes ${MY_NODE_NAME} ignore-taint.cluster-autoscaler.kubernetes.io/mytaint=init:NoSchedule-
+               echo "untaint node ${MY_NODE_NAME}"
+             fi
+             sleep 60
+           done
