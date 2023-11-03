@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: llama-front-lb-svc
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  selector:
+    app: llama-2-70b
+  loadBalancerIP: "34.171.17.189"
+  ports:
+  - name: tcp-port
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
