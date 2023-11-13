@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: llama-2-70b
+  name: llama-2-70b-time-sharing
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: llama-2-70b
+      app: llama-2-70b-time-sharing
   template:
     metadata:
       labels:
-        app: llama-2-70b
+        app: llama-2-70b-time-sharing
     spec:
       containers:
-      - name: llama-2-70b
+      - name: llama-2-70b-time-sharing
         image: ghcr.io/huggingface/text-generation-inference:1.0.3
         resources:
           limits:
@@ -46,4 +46,6 @@ spec:
             path: /mnt/stateful_partition/kube-ephemeral-ssd/llama-data
       nodeSelector:
         cloud.google.com/gke-accelerator: nvidia-l4
-        cloud.google.com/gke-nodepool: g2-standard-24
+        cloud.google.com/gke-gpu-sharing-strategy: time-sharing
+        cloud.google.com/gke-max-shared-clients-per-gpu: "3"
+        cloud.google.com/gke-nodepool: g2-standard-24-time-sharing
